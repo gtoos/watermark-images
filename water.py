@@ -17,27 +17,36 @@ def load_args():
 
 def usage():
     print(" ----------------------------Logo---------------------------------")
-    print("| Usage: wi.py input.jpg output.jpg logo.png position            |")
-    print("| Usage: wi.py /folder_input /folder_output logo.png position    |")
+    print("| Usage: water.py input.jpg output.jpg logo.png position            |")
+    print("| Usage: water.py /folder_input /folder_output logo.png position    |")
     print(" ----------------------------Text--------------------------------")
-    print("| Usage: wi.py input.jpg output.jpg 'text text' position         |")
-    print("| Usage: wi.py /folder_input /folder_output 'some text' position |")
+    print("| Usage: water.py input.jpg output.jpg 'some text' position         |")
+    print("| Usage: water.py /folder_input /folder_output 'some text' position |")
     print(" ----------------------------------------------------------------")
-    print("| position = topleft/topright/center/bottomleft/bottomright      |")
+    print("| position = topleft/topright/center/bottomleft/bottomright/bottom      |")
     print(" -----------------------------------------------------------------")
 
 def get_position(logo,image,pos):
     if pos == "topleft": return (0,0)
-    if pos == "bottomleft": return (0, imge.size[1] - logo.size[1])
+    if pos == "bottomleft": return (0, image.size[1] - logo.size[1])
     if pos == "topright": return (image.size[0] - logo.size[0] ,0)
     if pos == "bottomright": return (image.size[0] - logo.size[0] , image.size[1] - logo.size[1])
     if pos == "center": return ( (image.size[0] - logo.size[0])/2 ,( image.size[1] - logo.size[1])/2 )
+    if pos == "bottom": return ( (image.size[0] - logo.size[0])/2 ,  image.size[1] - logo.size[1] )
 
+
+def resize_image(i, basewidth=960):
+    img = Image.open(i)
+    wpercent = (basewidth / float(img.size[0]))
+    hsize = int((float(img.size[1]) * float(wpercent)))
+    img = img.resize((basewidth, hsize), Image.ANTIALIAS)
+    return img
+    # img.save('sompic.jpg')
 
 #watermark_logo_image(input,output,logo,position)
 def watermark_logo_image(i,o,l,p):
     logo  = Image.open(l)
-    image = Image.open(i)
+    image = resize_image(i)
     image.paste(logo, get_position(logo,image,p),logo)
     image.save(o)
 
